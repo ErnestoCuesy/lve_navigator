@@ -15,6 +15,7 @@ class TabbedWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Icon(Icons.explore),
         bottom: TabBar(
           tabs: [
             Tab(
@@ -94,16 +95,71 @@ class TabbedWidget extends StatelessWidget {
                     )
                 );
               },
-              title: Padding(
-                padding: const EdgeInsets.only(left: 0.0, top: 0.0, right: 0.0, bottom: 4.0),
-                child: Text(
-                  _tabListArray[index],
-                  style: _biggerFont,
-                ),
-              ),
+              title: tileInformation(tab, index, _tabListArray[index]),
+              // trailing: trailingIcon(tab, index),
             ),
           );
         });
+  }
+
+  Widget tileInformation(int tab, int index, String text){
+    if (tab == TAB_AMENITIES){
+      switch (index){
+        case 0:
+        case 1:
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Flexible(child: Icon(Icons.security)),
+              Flexible(child: Icon(Icons.directions_car)),
+              Text('  $text'),
+            ],
+          );
+        case 2:
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Flexible(child: Icon(Icons.restaurant)),
+              Flexible(child: Icon(Icons.pool)),
+              Text('  $text'),
+            ],
+          );
+        case 3:
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Flexible(child: Icon(Icons.content_cut)),
+              Flexible(child: Icon(Icons.pool)),
+              Text('  $text'),
+            ],
+          );
+        case 4:
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Flexible(child: Icon(Icons.cake)),
+              Flexible(child: Icon(Icons.pool)),
+              Text('  $text'),
+            ],
+          );
+        case 5:
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Flexible(child: Icon(Icons.build)),
+              Text('        $text'),
+            ],
+          );
+      }
+    } else {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Flexible(child: Icon(Icons.home)),
+          Text(' $text'),
+        ],
+      );
+    }
   }
 
   calculateArrayPosition(int tab, int index) {

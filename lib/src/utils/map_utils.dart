@@ -25,8 +25,6 @@ class MapUtils {
         .of(context)
         .size
         .height - padding;
-    print('Screen Width: $width');
-    print('Screen Height: $height');
 
     // Create map bounds
     bounds = createTargetBounds();
@@ -71,7 +69,6 @@ class MapUtils {
         bounds.northeast.latitude,
         bounds.northeast.longitude);
     markersInfo.add("Approx ${fmt.format(distance)} meters away from you.");
-    print('The Distance: $distance');
 
     // Clear markers
     controller.clearMarkers();
@@ -87,6 +84,8 @@ class MapUtils {
             markersInfo[DEST_LOC_TITLE], // Main text
             markersInfo[DEST_LOC_SNIPPET]   // Snippet
         ),
+//          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure)
+        icon: BitmapDescriptor.fromAsset('assets/chequered-flag.png')
       )
     );
 
@@ -125,8 +124,6 @@ class MapUtils {
     LatLng ne = LatLng(
         max(curr.latitude, dest.latitude), max(curr.longitude, dest.longitude));
 
-    print("SW coord: " + sw.toString());
-    print("NE coord: " + ne.toString());
     return LatLngBounds(southwest: sw, northeast: ne);
   }
 

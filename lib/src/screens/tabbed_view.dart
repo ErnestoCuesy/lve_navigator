@@ -9,14 +9,16 @@ class TabbedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: DefaultTabController(
-        length: 4,
-        child: TabbedWidget(currentLocation: currentLocation),
-      ),
-    );
-
+      return MaterialApp(
+        theme: new ThemeData(
+          primaryColor: Colors.cyan[900],
+          accentColor: Colors.red,
+        ),
+        home: DefaultTabController(
+          length: 4,
+          child: TabbedWidget(currentLocation: currentLocation),
+        ),
+      );
   }
-
 
 }
