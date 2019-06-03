@@ -21,6 +21,13 @@ class MapRoute extends StatelessWidget {
       selectedDestination: selectedDestination
     );
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context, false),
+        ),
+      ),
       body: GoogleMap(
         onMapCreated: mapUtils.onMapCreated,
         cameraTargetBounds: CameraTargetBounds(mapUtils.createTargetBounds()),

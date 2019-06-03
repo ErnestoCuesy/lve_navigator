@@ -13,6 +13,16 @@ class MapUtils {
 
   MapUtils({this.context, this.currentLocation, this.selectedDestination});
 
+  // Return appropriate destination chequered flag based on platform
+  BitmapDescriptor get deliveryIcon {
+    bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+    if (isIOS) {
+      return BitmapDescriptor.fromAsset('assets/chequered-flagiOS.png');
+    } else {
+      return BitmapDescriptor.fromAsset('assets/chequered-flag.png');
+    }
+  }
+
   onMapCreated(GoogleMapController controller) async {
 
     double zoom;
@@ -85,7 +95,7 @@ class MapUtils {
             markersInfo[DEST_LOC_SNIPPET]   // Snippet
         ),
 //          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure)
-        icon: BitmapDescriptor.fromAsset('assets/chequered-flag.png')
+        icon: deliveryIcon
       )
     );
 

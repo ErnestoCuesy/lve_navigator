@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -10,6 +11,7 @@ class LVENavigator extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Directory(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -20,8 +22,11 @@ class Directory extends StatefulWidget {
 }
 
 class DirectoryState extends State<Directory> {
+  Geolocator _geolocator;
   Position currentLocation;
   PermissionStatus _permissionStatus;
+  StreamSubscription positionStream;
+  LocationOptions locationOptions;
 
   @override
   void initState() {
@@ -29,9 +34,15 @@ class DirectoryState extends State<Directory> {
     _determinePermissions();
   }
 
+
+  @override
+  void dispose() {
+    positionStream.cancel();
+  }
+
   _determinePermissions(){
     PermissionHandler().checkPermissionStatus(PermissionGroup.location)
-        .then(_updatePermissions);
+        .then((status) => _updatePermissions(status));
   }
 
   _updatePermissions(PermissionStatus status){
@@ -59,11 +70,11 @@ class DirectoryState extends State<Directory> {
   }
 
   _determineCurrentLocation() {
-    Geolocator().getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best
-    ).then((currLoc) {
+    _geolocator = Geolocator();
+    locationOptions = LocationOptions(accuracy: LocationAccuracy.best, distanceFilter: 1);
+    positionStream = _geolocator.getPositionStream(locationOptions).listen((Position position) {
       setState(() {
-        currentLocation = currLoc;
+        currentLocation = position;
       });
     });
   }
