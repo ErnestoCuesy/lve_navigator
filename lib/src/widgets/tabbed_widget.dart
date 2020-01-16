@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:lve_navigator2/src/screens/unit_search_dialog.dart';
 import '../resources/app_data.dart';
 import '../widgets/map.dart';
 
@@ -7,8 +8,7 @@ import '../widgets/map.dart';
 class TabbedWidget extends StatelessWidget {
 
   final Position currentLocation;
-  var selectedDestination;
-
+  int selectedDestination;
   TabbedWidget({this.currentLocation});
 
   @override
@@ -19,16 +19,17 @@ class TabbedWidget extends StatelessWidget {
         bottom: TabBar(
           tabs: [
             Tab(
-              text: 'AMENITIES',
+              //text: 'AMENITIES',
+              child: _tabText('AMENITIES'),
             ),
             Tab(
-              text: 'Units 001-\n099',
+              child: _tabText('Units 001 -\n099'),
             ),
             Tab(
-              text: 'Units 100-\n199',
+              child: _tabText('Units 100 -\n199'),
             ),
             Tab(
-              text: 'Units 200-\n314',
+              child: _tabText('Units 200 -\n314'),
             )
           ],
         ),
@@ -40,11 +41,18 @@ class TabbedWidget extends StatelessWidget {
         _tabBuilder(TAB_UNITS_100_199),
         _tabBuilder(TAB_UNITS_200_314),
       ]),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => UnitSearchDialog.show(context, currentLocation), // TODO
+        child: Icon(Icons.search),
+      ),
     );
   }
 
-  ListView _tabBuilder(var tab) {
-    final TextStyle _biggerFont = const TextStyle(fontSize: 18.0);
+  Widget _tabText(String text) {
+    return Text(text, style: TextStyle(fontSize: 11.0),);
+  }
+
+  ListView _tabBuilder(int tab) {
     var _tabListArray = [];
     switch (tab) {
       case TAB_AMENITIES:
@@ -75,39 +83,48 @@ class TabbedWidget extends StatelessWidget {
         }
         break;
     }
-    return ListView.builder(
-        itemCount: _tabListArray.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Material(
-            color: Colors.transparent,
-            child: ListTile(
-              subtitle: Padding(
-                padding: const EdgeInsets.only(left: 0.0, top: 4.0, right: 0.0, bottom: 0.0),
-                child: Divider(),
+    return ListView.separated(
+        itemCount: _tabListArray.length + 2,
+        separatorBuilder: (context, index) => Divider(height: 0.5,),
+        itemBuilder: (context, index) {
+          if (index == 0 || index == _tabListArray.length + 1) {
+            return Container();
+          } else {
+            return Material(
+              color: Colors.transparent,
+              child: ListTile(
+                subtitle: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 0.0, top: 0.0, right: 0.0, bottom: 0.0),
+                ),
+                onTap: () => _pushMapRoute(context, tab, index),
+                title: tileInformation(tab, index - 1, _tabListArray[index - 1]),
+                // trailing: trailingIcon(tab, index),
               ),
-              onTap: () {
-                selectedDestination = calculateArrayPosition(tab, index);
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MapRoute(
-                      currentLocation: currentLocation,
-                      selectedDestination: selectedDestination,
-                    )
-                    )
-                );
-              },
-              title: tileInformation(tab, index, _tabListArray[index]),
-              // trailing: trailingIcon(tab, index),
-            ),
-          );
+            );
+          }
         });
   }
 
+  void _pushMapRoute(BuildContext context, int tab, int index) {
+    selectedDestination = calculateArrayPosition(tab, index - 1);
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) =>
+            MapRoute(
+              currentLocation: currentLocation,
+              selectedDestination: selectedDestination,
+            )
+        )
+    );
+  }
+
   Widget tileInformation(int tab, int index, String text){
+    Widget row;
     if (tab == TAB_AMENITIES){
       switch (index){
         case 0:
         case 1:
-          return Row(
+          row = Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Flexible(child: Icon(Icons.security)),
@@ -115,8 +132,9 @@ class TabbedWidget extends StatelessWidget {
               Text('  $text'),
             ],
           );
+          break;
         case 2:
-          return Row(
+          row = Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Flexible(child: Icon(Icons.restaurant)),
@@ -124,8 +142,9 @@ class TabbedWidget extends StatelessWidget {
               Text('  $text'),
             ],
           );
+          break;
         case 3:
-          return Row(
+          row = Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Flexible(child: Icon(Icons.content_cut)),
@@ -133,8 +152,9 @@ class TabbedWidget extends StatelessWidget {
               Text('  $text'),
             ],
           );
+          break;
         case 4:
-          return Row(
+          row = Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Flexible(child: Icon(Icons.cake)),
@@ -142,17 +162,19 @@ class TabbedWidget extends StatelessWidget {
               Text('  $text'),
             ],
           );
+          break;
         case 5:
-          return Row(
+          row = Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Flexible(child: Icon(Icons.build)),
               Text('        $text'),
             ],
           );
+          break;
       }
     } else {
-      return Row(
+      row = Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Flexible(child: Icon(Icons.home)),
@@ -160,31 +182,34 @@ class TabbedWidget extends StatelessWidget {
         ],
       );
     }
+    return row;
   }
 
-  calculateArrayPosition(int tab, int index) {
+  int calculateArrayPosition(int tab, int index) {
+    int pos;
     switch (tab) {
       case TAB_AMENITIES:
         {
-          return index;
+          pos = index;
         }
         break;
       case TAB_UNITS_1_99:
         {
-          return index + NUMBER_OF_AMENITIES;
+          pos = index + NUMBER_OF_AMENITIES;
         }
         break;
       case TAB_UNITS_100_199:
         {
-          return index + NUMBER_OF_AMENITIES + BATCH_99;
+          pos = index + NUMBER_OF_AMENITIES + BATCH_99;
         }
         break;
       case TAB_UNITS_200_314:
         {
-          return index + NUMBER_OF_AMENITIES + BATCH_99 + BATCH_99 + 1;
+          pos = index + NUMBER_OF_AMENITIES + BATCH_99 + BATCH_99 + 1;
         }
         break;
     }
+    return pos;
   }
 
 }
