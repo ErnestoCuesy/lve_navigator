@@ -5,20 +5,33 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../resources/app_data.dart';
 import '../utils/map_utils.dart';
 
-class MapRoute extends StatelessWidget {
+class MapRoute extends StatefulWidget {
   final Position currentLocation;
   final int selectedDestination;
-  var context;
 
   MapRoute({this.currentLocation, this.selectedDestination});
 
   @override
+  _MapRouteState createState() => _MapRouteState();
+}
+
+class _MapRouteState extends State<MapRoute> {
+  MapUtils mapUtils;
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+
+  void _callBack() {
+    setState(() {
+      markers = mapUtils.markers;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    this.context = context;
-    MapUtils mapUtils = MapUtils(
-      context: context,
-      currentLocation: currentLocation,
-      selectedDestination: selectedDestination
+    mapUtils = MapUtils(
+      mediaSize: MediaQuery.of(context).size,
+      currentLocation: widget.currentLocation,
+      selectedDestination: widget.selectedDestination,
+      callBack: _callBack,
     );
     return Scaffold(
       appBar: AppBar(
@@ -30,13 +43,16 @@ class MapRoute extends StatelessWidget {
       ),
       body: GoogleMap(
         onMapCreated: mapUtils.onMapCreated,
+        zoomControlsEnabled: false,
+        myLocationButtonEnabled: false,
         cameraTargetBounds: CameraTargetBounds(mapUtils.createTargetBounds()),
         initialCameraPosition: CameraPosition(
             target:
             LatLng(
-                (currentLocation.latitude + latitudesArr[selectedDestination]) / 2,
-                (currentLocation.longitude + longitudesArr[selectedDestination]) / 2),
+                (widget.currentLocation.latitude + latitudesArr[widget.selectedDestination]) / 2,
+                (widget.currentLocation.longitude + longitudesArr[widget.selectedDestination]) / 2),
             zoom: 18.0),
+            markers: Set<Marker>.of(markers.values),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
@@ -48,7 +64,7 @@ class MapRoute extends StatelessWidget {
 
   useGoogleNavigation() async {
     var googleApiUrlString =
-        "http://maps.google.com/maps?saddr=${currentLocation.latitude},${currentLocation.longitude}&daddr=${latitudesArr[selectedDestination]},${longitudesArr[selectedDestination]}";
+        "http://maps.google.com/maps?saddr=${widget.currentLocation.latitude},${widget.currentLocation.longitude}&daddr=${latitudesArr[widget.selectedDestination]},${longitudesArr[widget.selectedDestination]}";
     print(googleApiUrlString);
     if (await canLaunch(googleApiUrlString)) {
       await launch(googleApiUrlString);
@@ -57,5 +73,4 @@ class MapRoute extends StatelessWidget {
     }
 
   }
-
 }

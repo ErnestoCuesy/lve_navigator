@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -6,45 +8,41 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../resources/app_data.dart';
 
 class MapUtils {
-  BuildContext context;
-  Position currentLocation;
-  int selectedDestination;
-  LatLngBounds bounds;
+  final Position currentLocation;
+  final int selectedDestination;
+  final Size mediaSize;
+  final Function callBack;
 
-  MapUtils({this.context, this.currentLocation, this.selectedDestination});
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+
+  MapUtils({this.currentLocation, this.selectedDestination, this.mediaSize, this.callBack});
 
   // Return appropriate destination chequered flag based on platform
-  BitmapDescriptor get deliveryIcon {
-    bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
-    if (isIOS) {
-      return BitmapDescriptor.fromAsset('assets/chequered-flagiOS.png');
+  Future<BitmapDescriptor> get deliveryIcon async {
+    if (Platform.isIOS) {
+      return BitmapDescriptor.fromAssetImage(
+          ImageConfiguration(),
+          'assets/chequered-flagiOS.png');
     } else {
-      return BitmapDescriptor.fromAsset('assets/chequered-flag.png');
+      return BitmapDescriptor.fromAssetImage(
+          ImageConfiguration(),
+          'assets/chequered-flag.png');
     }
   }
 
   onMapCreated(GoogleMapController controller) async {
 
-    double zoom;
-    double padding = 150.0;
-    double width = MediaQuery
-        .of(context)
-        .size
-        .width - padding;
-    double height = MediaQuery
-        .of(context)
-        .size
-        .height - padding;
+    final double padding = 150.0;
+    final double width = mediaSize.width - padding;
+    final double height = mediaSize.height - padding;
 
     // Create map bounds
-    bounds = createTargetBounds();
+    final bounds = createTargetBounds();
 
     // Build markers title and snippet information for both current location and destination
-    List<String> markersInfo = new List<String>();
-    NumberFormat fmt = new NumberFormat("0", "en_ZA");
+    final NumberFormat fmt = new NumberFormat('0', 'en_ZA');
     double nearestDistance;
-    String nearestPlace = "";
-    double distance;
+    String nearestPlace = '';
 
     // Determine distance to nearest point of current location
     for (int i = 0; i < latitudesArr.length; i++) {
@@ -59,64 +57,54 @@ class MapUtils {
       }
     }
 
-    markersInfo.add('You are here');
+    String startSnippetInfo;
     if (nearestPlace.isEmpty) {
-      markersInfo.add("...");  // Nowhere near LVE places
+      startSnippetInfo = '...'; // Nowhere near LVE places
     } else {
-      var subString = nearestPlace.split('/');
-      markersInfo.add(
-          "Near to " + subString[0] + " ${fmt.format(nearestDistance)} metres");
+      final subString = nearestPlace.split('/');
+      startSnippetInfo = 'Near to ' + subString[0] + ' ${fmt.format(nearestDistance)} metres';
     }
 
+    final startMarkerId = MarkerId('start');
+    final startMarker = Marker(
+      markerId: startMarkerId,
+      position: LatLng(currentLocation.latitude, currentLocation.longitude),
+      infoWindow: InfoWindow(title: 'You are here', snippet: startSnippetInfo)
+    );
+
     // Format selected destination name (remove text after first / to save screen space)
-    var subString = placesNamesArr[selectedDestination].split('/');
-    markersInfo.add(subString[0]);;
+    final subString = placesNamesArr[selectedDestination].split('/');
 
     // Determine distance to destination
-    distance = await Geolocator().distanceBetween(
+    double distance = await Geolocator().distanceBetween(
         bounds.southwest.latitude,
         bounds.southwest.longitude,
         bounds.northeast.latitude,
         bounds.northeast.longitude);
-    markersInfo.add("Approx ${fmt.format(distance)} meters away from you.");
+    final finishSnippetInfo = 'Approx ${fmt.format(distance)} meters away from you.';
 
-    // Clear markers
-    controller.clearMarkers();
-
-    // Add destination marker
-    controller.addMarker(
-        MarkerOptions(
-        position: LatLng(
-            latitudesArr[selectedDestination],
-            longitudesArr[selectedDestination]
-        ),
-        infoWindowText: InfoWindowText(
-            markersInfo[DEST_LOC_TITLE], // Main text
-            markersInfo[DEST_LOC_SNIPPET]   // Snippet
-        ),
-//          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure)
-        icon: deliveryIcon
-      )
+    final finishMarkerId = MarkerId('finish');
+    final finishMarker = Marker(
+      markerId: finishMarkerId,
+      position: LatLng(
+          latitudesArr[selectedDestination],
+          longitudesArr[selectedDestination]
+      ),
+      infoWindow: InfoWindow(title: subString[0], snippet: finishSnippetInfo),
+      icon: await deliveryIcon
     );
 
-    // Add current location marker
-    controller.addMarker(
-        MarkerOptions(
-        position: LatLng(
-            currentLocation.latitude,
-            currentLocation.longitude
-        ),
-        infoWindowText: InfoWindowText(
-            markersInfo[CURR_LOC_TITLE], // Main text
-            markersInfo[CURR_LOC_SNIPPET]     // Snippet
-        ),
-        )
-    );
+    // Clear and add markers to map
+    markers.clear();
+    markers[startMarkerId] = startMarker;
+    markers[finishMarkerId] = finishMarker;
 
     // Determine correct level of zoom
-    zoom =
-        getBoundsZoomLevel(bounds.northeast, bounds.southwest, width, height);
+    double zoom =
+        _getBoundsZoomLevel(bounds.northeast, bounds.southwest, width, height);
     controller.moveCamera(CameraUpdate.zoomTo(zoom));
+
+    callBack();
   }
 
   LatLngBounds createTargetBounds() {
@@ -137,12 +125,12 @@ class MapUtils {
     return LatLngBounds(southwest: sw, northeast: ne);
   }
 
-  double getBoundsZoomLevel(LatLng northeast, LatLng southwest, double width,
+  double _getBoundsZoomLevel(LatLng northeast, LatLng southwest, double width,
       double height) {
     const int GLOBE_WIDTH = 256; // a constant in Google's map projection
     const double ZOOM_MAX = 21;
-    double latFraction = (latRad(northeast.latitude) -
-        latRad(southwest.latitude)) / pi;
+    double latFraction = (_latRad(northeast.latitude) -
+        _latRad(southwest.latitude)) / pi;
     double lngDiff = northeast.longitude - southwest.longitude;
     double lngFraction = ((lngDiff < 0) ? (lngDiff + 360) : lngDiff) / 360;
     double latZoom = _zoom(height, GLOBE_WIDTH, latFraction);
@@ -151,7 +139,7 @@ class MapUtils {
     return zoom;
   }
 
-  double latRad(double lat) {
+  double _latRad(double lat) {
     double sinx = sin(lat * pi / 180);
     double radX2 = log((1 + sinx) / (1 - sinx)) / 2;
     return max(min(radX2, pi), -pi) / 2;

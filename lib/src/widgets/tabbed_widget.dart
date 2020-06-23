@@ -42,7 +42,7 @@ class TabbedWidget extends StatelessWidget {
         _tabBuilder(TAB_UNITS_200_314),
       ]),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => UnitSearchDialog.show(context, currentLocation), // TODO
+        onPressed: () => UnitSearchDialog.show(context, currentLocation),
         child: Icon(Icons.search),
       ),
     );

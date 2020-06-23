@@ -37,32 +37,53 @@ class DirectoryState extends State<Directory> {
 
   @override
   void dispose() {
+    super.dispose();
     positionStream.cancel();
   }
 
-  _determinePermissions(){
-    PermissionHandler().checkPermissionStatus(PermissionGroup.location)
-        .then((status) => _updatePermissions(status));
+  _determinePermissions() async {
+//    PermissionHandler().checkPermissionStatus(PermissionGroup.location)
+//        .then((status) => _updatePermissions(status));
+    Permission.location.status.then((status) => _updatePermissions(status));
   }
 
-  _updatePermissions(PermissionStatus status){
+//  _updatePermissions(PermissionStatus status){
+//    if (_permissionStatus != status) {
+//      setState(() {
+//        _permissionStatus = status;
+//        if (_permissionStatus == PermissionStatus.granted){
+//          // print('Permission had already been granted... determining location...');
+//          _determineCurrentLocation();
+//        } else {
+//          // print('Permission not granted yet... asking...');
+//          PermissionHandler().requestPermissions([PermissionGroup.location])
+//            .then((permission){
+//              if (permission[PermissionGroup.location] == PermissionStatus.granted){
+//                // print('Permission granted... determining location...');
+//                _determineCurrentLocation();
+//              } else {
+//                // print('Permission not granted by user... exiting...');
+//                exit (0);
+//              }
+//          });
+//        }
+//      });
+//    }
+//  }
+
+  _updatePermissions(PermissionStatus status) {
     if (_permissionStatus != status) {
       setState(() {
         _permissionStatus = status;
-        if (_permissionStatus == PermissionStatus.granted){
-          // print('Permission had already been granted... determining location...');
+        if (_permissionStatus == PermissionStatus.granted) {
           _determineCurrentLocation();
         } else {
-          // print('Permission not granted yet... asking...');
-          PermissionHandler().requestPermissions([PermissionGroup.location])
-            .then((permission){
-              if (permission[PermissionGroup.location] == PermissionStatus.granted){
-                // print('Permission granted... determining location...');
-                _determineCurrentLocation();
-              } else {
-                // print('Permission not granted by user... exiting...');
-                exit (0);
-              }
+          Permission.location.request().then((permission) {
+            if (permission.isGranted) {
+              _determineCurrentLocation();
+            } else {
+              exit(0);
+            }
           });
         }
       });
