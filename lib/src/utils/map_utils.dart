@@ -46,7 +46,7 @@ class MapUtils {
 
     // Determine distance to nearest point of current location
     for (int i = 0; i < latitudesArr.length; i++) {
-      double distance = await Geolocator().distanceBetween(
+      double distance = GeolocatorPlatform.distanceBetween(
           currentLocation.latitude,
           currentLocation.longitude,
           latitudesArr[i],
@@ -76,7 +76,7 @@ class MapUtils {
     final subString = placesNamesArr[selectedDestination].split('/');
 
     // Determine distance to destination
-    double distance = await Geolocator().distanceBetween(
+    double distance = GeolocatorPlatform.distanceBetween(
         bounds.southwest.latitude,
         bounds.southwest.longitude,
         bounds.northeast.latitude,

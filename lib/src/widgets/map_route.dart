@@ -35,6 +35,7 @@ class _MapRouteState extends State<MapRoute> {
     );
     return Scaffold(
       appBar: AppBar(
+        title: Text('Back'),
         automaticallyImplyLeading: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -44,6 +45,7 @@ class _MapRouteState extends State<MapRoute> {
       body: GoogleMap(
         onMapCreated: mapUtils.onMapCreated,
         zoomControlsEnabled: false,
+        mapToolbarEnabled: false,
         myLocationButtonEnabled: false,
         cameraTargetBounds: CameraTargetBounds(mapUtils.createTargetBounds()),
         initialCameraPosition: CameraPosition(

@@ -1,8 +1,7 @@
-import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:lve_navigator2/src/screens/location_services_error.dart';
 import 'screens/tabbed_view.dart';
 import 'screens/loading_view.dart';
 
@@ -22,18 +21,9 @@ class Directory extends StatefulWidget {
 }
 
 class DirectoryState extends State<Directory> {
-  Geolocator _geolocator;
-  Position currentLocation;
-  PermissionStatus _permissionStatus;
+  Position _currentLocation;
   StreamSubscription positionStream;
   LocationOptions locationOptions;
-
-  @override
-  void initState() {
-    super.initState();
-    _determinePermissions();
-  }
-
 
   @override
   void dispose() {
@@ -41,72 +31,52 @@ class DirectoryState extends State<Directory> {
     positionStream.cancel();
   }
 
-  _determinePermissions() async {
-//    PermissionHandler().checkPermissionStatus(PermissionGroup.location)
-//        .then((status) => _updatePermissions(status));
-    Permission.location.status.then((status) => _updatePermissions(status));
+  void _askPermission() {
+    requestPermission().then((status) {
+      setState(() {
+      });
+    });
   }
 
-//  _updatePermissions(PermissionStatus status){
-//    if (_permissionStatus != status) {
-//      setState(() {
-//        _permissionStatus = status;
-//        if (_permissionStatus == PermissionStatus.granted){
-//          // print('Permission had already been granted... determining location...');
-//          _determineCurrentLocation();
-//        } else {
-//          // print('Permission not granted yet... asking...');
-//          PermissionHandler().requestPermissions([PermissionGroup.location])
-//            .then((permission){
-//              if (permission[PermissionGroup.location] == PermissionStatus.granted){
-//                // print('Permission granted... determining location...');
-//                _determineCurrentLocation();
-//              } else {
-//                // print('Permission not granted by user... exiting...');
-//                exit (0);
-//              }
-//          });
-//        }
-//      });
-//    }
-//  }
-
-  _updatePermissions(PermissionStatus status) {
-    if (_permissionStatus != status) {
-      setState(() {
-        _permissionStatus = status;
-        if (_permissionStatus == PermissionStatus.granted) {
-          _determineCurrentLocation();
-        } else {
-          Permission.location.request().then((permission) {
-            if (permission.isGranted) {
-              _determineCurrentLocation();
-            } else {
-              exit(0);
-            }
-          });
-        }
-      });
-    }
-  }
-
-  _determineCurrentLocation() {
-    _geolocator = Geolocator();
-    locationOptions = LocationOptions(accuracy: LocationAccuracy.best, distanceFilter: 1);
-    positionStream = _geolocator.getPositionStream(locationOptions).listen((Position position) {
-      setState(() {
-        currentLocation = position;
-      });
+  void _continueWithoutLocation() {
+    setState(() {
+      _currentLocation = Position(longitude: 0, latitude: 0);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (currentLocation != null){
-      return TabbedView(currentLocation: currentLocation);
-    } else {
-      return LoadingView();
-    }
+    return FutureBuilder<LocationPermission>(
+      future: checkPermission(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return LoadingView();
+        } else {
+          if (snapshot.data == LocationPermission.deniedForever && _currentLocation == null) {
+            return LocationServicesError(
+              askPermission: () => _askPermission(),
+              continueWithoutLocation: () => _continueWithoutLocation(),
+              message: 'Access to location not granted or location services are off.',
+            );
+          }
+          return FutureBuilder<Position>(
+              future: getCurrentPosition(desiredAccuracy: LocationAccuracy.best),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return TabbedView(currentLocation: snapshot.data ?? _currentLocation,);
+                } else
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return LoadingView();
+                } else {
+                  return LocationServicesError(
+                    askPermission: () => _askPermission(),
+                    message: 'Please make sure location services are enabled before proceeding.',
+                  );
+                }
+              }
+          );
+        }
+      },
+    );
   }
-
 }

@@ -2,14 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lve_navigator2/src/screens/unit_search_dialog.dart';
 import '../resources/app_data.dart';
-import '../widgets/map.dart';
+import '../widgets/map_route.dart';
 
 
-class TabbedWidget extends StatelessWidget {
+class TabbedWidget extends StatefulWidget {
 
   final Position currentLocation;
-  int selectedDestination;
+
   TabbedWidget({this.currentLocation});
+
+  @override
+  _TabbedWidgetState createState() => _TabbedWidgetState();
+}
+
+class _TabbedWidgetState extends State<TabbedWidget> {
+  int selectedDestination;
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +43,13 @@ class TabbedWidget extends StatelessWidget {
         title: Text('LVE Navigator'),
       ),
       body: new TabBarView(children: <ListView>[
-        _tabBuilder(TAB_AMENITIES),
-        _tabBuilder(TAB_UNITS_1_99),
-        _tabBuilder(TAB_UNITS_100_199),
-        _tabBuilder(TAB_UNITS_200_314),
+        _tabBuilder(context, TAB_AMENITIES),
+        _tabBuilder(context, TAB_UNITS_1_99),
+        _tabBuilder(context, TAB_UNITS_100_199),
+        _tabBuilder(context, TAB_UNITS_200_314),
       ]),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => UnitSearchDialog.show(context, currentLocation),
+        onPressed: () => UnitSearchDialog.show(context, widget.currentLocation),
         child: Icon(Icons.search),
       ),
     );
@@ -52,7 +59,7 @@ class TabbedWidget extends StatelessWidget {
     return Text(text, style: TextStyle(fontSize: 11.0),);
   }
 
-  ListView _tabBuilder(int tab) {
+  ListView _tabBuilder(BuildContext context, int tab) {
     var _tabListArray = [];
     switch (tab) {
       case TAB_AMENITIES:
@@ -111,7 +118,7 @@ class TabbedWidget extends StatelessWidget {
     Navigator.push(context,
         MaterialPageRoute(builder: (context) =>
             MapRoute(
-              currentLocation: currentLocation,
+              currentLocation: widget.currentLocation,
               selectedDestination: selectedDestination,
             )
         )
@@ -211,5 +218,4 @@ class TabbedWidget extends StatelessWidget {
     }
     return pos;
   }
-
 }

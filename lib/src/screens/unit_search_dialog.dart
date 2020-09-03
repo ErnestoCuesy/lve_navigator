@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lve_navigator2/src/resources/app_data.dart';
-import 'package:lve_navigator2/src/widgets/map.dart';
+import 'package:lve_navigator2/src/widgets/map_route.dart';
 
 class UnitSearchDialog extends StatefulWidget {
   const UnitSearchDialog({Key key, this.currentLocation}) : super(key: key);
@@ -24,7 +26,7 @@ class _UnitSearchDialogState extends State<UnitSearchDialog> {
   final _formKey = GlobalKey<FormState>();
   int _unit = 0;
 
-  Widget _buildForm() {
+  Widget _buildForm(BuildContext context) {
     return Form(
       key: _formKey,
       child: Column(
@@ -53,7 +55,7 @@ class _UnitSearchDialogState extends State<UnitSearchDialog> {
           ),
           RaisedButton(
             child: const Text('OK'),
-            onPressed: () => _submit(),
+            onPressed: () => _submit(context),
           )
         ],
       ),
@@ -69,13 +71,13 @@ class _UnitSearchDialogState extends State<UnitSearchDialog> {
     return false;
   }
 
-  void _submit() {
+  void _submit(BuildContext context) {
     if (_validateForm()) {
-      _pushMapRoute();
+      _pushMapRoute(context);
     }
   }
 
-  void _pushMapRoute() {
+  void _pushMapRoute(BuildContext context) {
     print('unit: $_unit');
     int selectedDestination = _unit + NUMBER_OF_AMENITIES - 1;
     Navigator.push(context,
@@ -96,7 +98,7 @@ class _UnitSearchDialogState extends State<UnitSearchDialog> {
           'Search unit'
         ),
       ),
-      body: _buildForm(),
+      body: _buildForm(context),
     );
   }
 
