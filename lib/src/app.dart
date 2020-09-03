@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lve_navigator2/src/screens/location_services_error.dart';
@@ -21,15 +20,8 @@ class Directory extends StatefulWidget {
 }
 
 class DirectoryState extends State<Directory> {
-  Position _currentLocation;
-  StreamSubscription positionStream;
-  LocationOptions locationOptions;
-
-  @override
-  void dispose() {
-    super.dispose();
-    positionStream.cancel();
-  }
+  Position _defaultLocation = Position(longitude: 0, latitude: 0);
+  bool _continueFlag = false;
 
   void _askPermission() {
     requestPermission().then((status) {
@@ -40,7 +32,7 @@ class DirectoryState extends State<Directory> {
 
   void _continueWithoutLocation() {
     setState(() {
-      _currentLocation = Position(longitude: 0, latitude: 0);
+      _continueFlag = true;
     });
   }
 
@@ -52,18 +44,18 @@ class DirectoryState extends State<Directory> {
         if (!snapshot.hasData) {
           return LoadingView();
         } else {
-          if (snapshot.data == LocationPermission.deniedForever && _currentLocation == null) {
+          if (snapshot.data == LocationPermission.deniedForever && !_continueFlag) {
             return LocationServicesError(
               askPermission: () => _askPermission(),
               continueWithoutLocation: () => _continueWithoutLocation(),
-              message: 'Access to location not granted or location services are off.',
+              message: 'Access to location not granted or location services are off. Please rectify and re-run LVE Navigator.',
             );
           }
           return FutureBuilder<Position>(
               future: getCurrentPosition(desiredAccuracy: LocationAccuracy.best),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  return TabbedView(currentLocation: snapshot.data ?? _currentLocation,);
+                  return TabbedView(currentLocation: snapshot.data ?? _defaultLocation,);
                 } else
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return LoadingView();
