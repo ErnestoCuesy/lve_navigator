@@ -24,9 +24,8 @@ class DirectoryState extends State<Directory> {
   bool _continueFlag = false;
 
   void _askPermission() {
-    requestPermission().then((status) {
-      setState(() {
-      });
+    Geolocator.requestPermission().then((status) {
+      setState(() {});
     });
   }
 
@@ -39,34 +38,39 @@ class DirectoryState extends State<Directory> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<LocationPermission>(
-      future: checkPermission(),
+      future: Geolocator.checkPermission(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return LoadingView();
         } else {
-          if (snapshot.data == LocationPermission.deniedForever && !_continueFlag) {
+          if (snapshot.data == LocationPermission.deniedForever &&
+              !_continueFlag) {
             return LocationServicesError(
               askPermission: () => _askPermission(),
               continueWithoutLocation: () => _continueWithoutLocation(),
-              message: 'Access to location not granted or location services are off. Please rectify and re-run LVE Navigator.',
+              message:
+                  'Access to location not granted or location services are off. Please rectify and re-run LVE Navigator.',
             );
           }
           return FutureBuilder<Position>(
-              future: getCurrentPosition(desiredAccuracy: LocationAccuracy.best),
+              future: Geolocator.getCurrentPosition(
+                  desiredAccuracy: LocationAccuracy.best),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  return TabbedView(currentLocation: snapshot.data ?? _defaultLocation,);
-                } else
-                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return TabbedView(
+                    currentLocation: snapshot.data ?? _defaultLocation,
+                  );
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
                   return LoadingView();
                 } else {
                   return LocationServicesError(
                     askPermission: () => _askPermission(),
-                    message: 'Please make sure location services are enabled before proceeding.',
+                    message:
+                        'Please make sure location services are enabled before proceeding.',
                   );
                 }
-              }
-          );
+              });
         }
       },
     );
