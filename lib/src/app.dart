@@ -20,7 +20,15 @@ class Directory extends StatefulWidget {
 }
 
 class DirectoryState extends State<Directory> {
-  Position _defaultLocation = Position(longitude: 0, latitude: 0);
+  Position _defaultLocation = Position(
+      longitude: 0,
+      latitude: 0,
+      speed: 0,
+      accuracy: 0,
+      speedAccuracy: 0,
+      heading: 0,
+      timestamp: DateTime.now(),
+      altitude: 0);
   bool _continueFlag = false;
 
   void _askPermission() {
