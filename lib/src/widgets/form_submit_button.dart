@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'custom_raised_button.dart';
 
@@ -15,7 +14,7 @@ class FormSubmitButton extends CustomRaisedButton {
             style: Theme.of(context).primaryTextTheme.headline5,
           ),
           height: 44.0,
-          textColor: Theme.of(context).accentColor,
+          textColor: Theme.of(context).colorScheme.secondary,
           color: color,
           borderRadius: 4.0,
           onPressed: onPressed,

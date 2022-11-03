@@ -49,30 +49,32 @@ class _MapRouteState extends State<MapRoute> {
         myLocationButtonEnabled: false,
         cameraTargetBounds: CameraTargetBounds(mapUtils.createTargetBounds()),
         initialCameraPosition: CameraPosition(
-            target:
-            LatLng(
-                (widget.currentLocation.latitude + latitudesArr[widget.selectedDestination]) / 2,
-                (widget.currentLocation.longitude + longitudesArr[widget.selectedDestination]) / 2),
+            target: LatLng(
+                (widget.currentLocation.latitude +
+                        latitudesArr[widget.selectedDestination]) /
+                    2,
+                (widget.currentLocation.longitude +
+                        longitudesArr[widget.selectedDestination]) /
+                    2),
             zoom: 18.0),
-            markers: Set<Marker>.of(markers.values),
+        markers: Set<Marker>.of(markers.values),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
+          backgroundColor: Colors.blue,
           onPressed: useGoogleNavigation,
-              child: Icon(Icons.directions)
-      ),
+          child: Icon(Icons.directions)),
     );
   }
 
   useGoogleNavigation() async {
-    var googleApiUrlString =
-        "http://maps.google.com/maps?saddr=${widget.currentLocation.latitude},${widget.currentLocation.longitude}&daddr=${latitudesArr[widget.selectedDestination]},${longitudesArr[widget.selectedDestination]}";
+    Uri googleApiUrlString =
+        "http://maps.google.com/maps?saddr=${widget.currentLocation.latitude},${widget.currentLocation.longitude}&daddr=${latitudesArr[widget.selectedDestination]},${longitudesArr[widget.selectedDestination]}"
+            as Uri;
     print(googleApiUrlString);
-    if (await canLaunch(googleApiUrlString)) {
-      await launch(googleApiUrlString);
+    if (await canLaunchUrl(googleApiUrlString)) {
+      await launchUrl(googleApiUrlString);
     } else {
       throw 'Could not launch $googleApiUrlString';
     }
-
   }
 }
