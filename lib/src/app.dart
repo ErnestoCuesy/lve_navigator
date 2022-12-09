@@ -51,8 +51,7 @@ class DirectoryState extends State<Directory> {
         if (!snapshot.hasData) {
           return LoadingView();
         } else {
-          if (snapshot.data == LocationPermission.deniedForever &&
-              !_continueFlag) {
+          if (snapshot.data == LocationPermission.denied && !_continueFlag) {
             return LocationServicesError(
               askPermission: () => _askPermission(),
               continueWithoutLocation: () => _continueWithoutLocation(),

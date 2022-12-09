@@ -10,9 +10,12 @@ class TabbedView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: new ThemeData(
-        primaryColor: Colors.cyan[900],
-        colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.red),
+      theme: ThemeData(
+        colorScheme: ColorScheme.light().copyWith(
+          primary: Colors.cyan[900],
+          secondary: Colors.red,
+        ),
+        indicatorColor: Colors.red,
       ),
       home: DefaultTabController(
         length: 4,

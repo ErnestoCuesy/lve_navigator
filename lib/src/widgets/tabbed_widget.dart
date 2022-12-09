@@ -4,9 +4,7 @@ import 'package:lve_navigator2/src/screens/unit_search_dialog.dart';
 import '../resources/app_data.dart';
 import '../widgets/map_route.dart';
 
-
 class TabbedWidget extends StatefulWidget {
-
   final Position? currentLocation;
 
   TabbedWidget({this.currentLocation});
@@ -27,7 +25,7 @@ class _TabbedWidgetState extends State<TabbedWidget> {
           tabs: [
             Tab(
               //text: 'AMENITIES',
-              child: _tabText('AMENITIES'),
+              child: _tabText('FACILITIES'),
             ),
             Tab(
               child: _tabText('Units 001 -\n099'),
@@ -40,7 +38,7 @@ class _TabbedWidgetState extends State<TabbedWidget> {
             )
           ],
         ),
-        title: Text('LVE Navigator'),
+        title: Text('Lonehill Village Estate'),
       ),
       body: new TabBarView(children: <ListView>[
         _tabBuilder(context, TAB_AMENITIES),
@@ -56,7 +54,10 @@ class _TabbedWidgetState extends State<TabbedWidget> {
   }
 
   Widget _tabText(String text) {
-    return Text(text, style: TextStyle(fontSize: 11.0),);
+    return Text(
+      text,
+      style: TextStyle(fontSize: 11.0),
+    );
   }
 
   ListView _tabBuilder(BuildContext context, int tab) {
@@ -92,7 +93,9 @@ class _TabbedWidgetState extends State<TabbedWidget> {
     }
     return ListView.separated(
         itemCount: _tabListArray.length + 2,
-        separatorBuilder: (context, index) => Divider(height: 0.5,),
+        separatorBuilder: (context, index) => Divider(
+              height: 0.5,
+            ),
         itemBuilder: (context, index) {
           if (index == 0 || index == _tabListArray.length + 1) {
             return Container();
@@ -105,7 +108,8 @@ class _TabbedWidgetState extends State<TabbedWidget> {
                       left: 0.0, top: 0.0, right: 0.0, bottom: 0.0),
                 ),
                 onTap: () => _pushMapRoute(context, tab, index),
-                title: tileInformation(tab, index - 1, _tabListArray[index - 1]),
+                title:
+                    tileInformation(tab, index - 1, _tabListArray[index - 1]),
                 // trailing: trailingIcon(tab, index),
               ),
             );
@@ -115,20 +119,19 @@ class _TabbedWidgetState extends State<TabbedWidget> {
 
   void _pushMapRoute(BuildContext context, int tab, int index) {
     selectedDestination = calculateArrayPosition(tab, index - 1);
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) =>
-            MapRoute(
-              currentLocation: widget.currentLocation,
-              selectedDestination: selectedDestination,
-            )
-        )
-    );
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MapRoute(
+                  currentLocation: widget.currentLocation,
+                  selectedDestination: selectedDestination,
+                )));
   }
 
-  Widget? tileInformation(int tab, int index, String text){
+  Widget? tileInformation(int tab, int index, String text) {
     Widget? row;
-    if (tab == TAB_AMENITIES){
-      switch (index){
+    if (tab == TAB_AMENITIES) {
+      switch (index) {
         case 0:
         case 1:
           row = Row(

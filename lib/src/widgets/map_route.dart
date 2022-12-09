@@ -67,12 +67,11 @@ class _MapRouteState extends State<MapRoute> {
   }
 
   useGoogleNavigation() async {
-    Uri googleApiUrlString =
-        "http://maps.google.com/maps?saddr=${widget.currentLocation!.latitude},${widget.currentLocation!.longitude}&daddr=${latitudesArr[widget.selectedDestination!]},${longitudesArr[widget.selectedDestination!]}"
-            as Uri;
+    Uri googleApiUrlString = Uri.parse(
+        "http://maps.google.com/maps?saddr=${widget.currentLocation!.latitude},${widget.currentLocation!.longitude}&daddr=${latitudesArr[widget.selectedDestination!]},${longitudesArr[widget.selectedDestination!]}");
     print(googleApiUrlString);
     if (await canLaunchUrl(googleApiUrlString)) {
-      await launchUrl(googleApiUrlString);
+      await launchUrl(googleApiUrlString, mode: LaunchMode.externalApplication);
     } else {
       throw 'Could not launch $googleApiUrlString';
     }
