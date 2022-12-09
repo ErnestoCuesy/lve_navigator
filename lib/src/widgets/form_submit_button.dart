@@ -3,10 +3,10 @@ import 'custom_raised_button.dart';
 
 class FormSubmitButton extends CustomRaisedButton {
   FormSubmitButton({
-    @required BuildContext context,
-    @required String text,
-    @required Color color,
-    VoidCallback onPressed,
+    required BuildContext context,
+    required String text,
+    required Color color,
+    VoidCallback? onPressed,
   }) : super(
           context: context,
           child: Text(

@@ -7,11 +7,11 @@ import 'package:lve_navigator2/src/widgets/custom_raised_button.dart';
 import 'package:lve_navigator2/src/widgets/map_route.dart';
 
 class UnitSearchDialog extends StatefulWidget {
-  const UnitSearchDialog({Key key, this.currentLocation}) : super(key: key);
-  final Position currentLocation;
+  const UnitSearchDialog({Key? key, this.currentLocation}) : super(key: key);
+  final Position? currentLocation;
 
   static Future<void> show(
-      BuildContext context, Position currentLocation) async {
+      BuildContext context, Position? currentLocation) async {
     await Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
             UnitSearchDialog(currentLocation: currentLocation),
@@ -41,7 +41,7 @@ class _UnitSearchDialogState extends State<UnitSearchDialog> {
                 labelText: 'Enter unit number (1 to 314)',
               ),
               validator: (value) {
-                var v = int.tryParse(value);
+                var v = int.tryParse(value!)!;
                 print('value: $v');
                 if (v > 0 && v < 315) {
                   return null;
@@ -68,7 +68,7 @@ class _UnitSearchDialogState extends State<UnitSearchDialog> {
   }
 
   bool _validateForm() {
-    final form = _formKey.currentState;
+    final form = _formKey.currentState!;
     if (form.validate()) {
       form.save();
       return true;

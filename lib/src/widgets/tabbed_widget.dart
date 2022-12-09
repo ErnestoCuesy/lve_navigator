@@ -7,7 +7,7 @@ import '../widgets/map_route.dart';
 
 class TabbedWidget extends StatefulWidget {
 
-  final Position currentLocation;
+  final Position? currentLocation;
 
   TabbedWidget({this.currentLocation});
 
@@ -16,7 +16,7 @@ class TabbedWidget extends StatefulWidget {
 }
 
 class _TabbedWidgetState extends State<TabbedWidget> {
-  int selectedDestination;
+  int? selectedDestination;
 
   @override
   Widget build(BuildContext context) {
@@ -125,8 +125,8 @@ class _TabbedWidgetState extends State<TabbedWidget> {
     );
   }
 
-  Widget tileInformation(int tab, int index, String text){
-    Widget row;
+  Widget? tileInformation(int tab, int index, String text){
+    Widget? row;
     if (tab == TAB_AMENITIES){
       switch (index){
         case 0:
@@ -192,8 +192,8 @@ class _TabbedWidgetState extends State<TabbedWidget> {
     return row;
   }
 
-  int calculateArrayPosition(int tab, int index) {
-    int pos;
+  int? calculateArrayPosition(int tab, int index) {
+    int? pos;
     switch (tab) {
       case TAB_AMENITIES:
         {

@@ -3,11 +3,11 @@ import 'package:lve_navigator2/src/screens/empty_content.dart';
 import 'package:lve_navigator2/src/widgets/form_submit_button.dart';
 
 class LocationServicesError extends StatelessWidget {
-  final Function askPermission;
-  final Function continueWithoutLocation;
-  final String message;
+  final Function? askPermission;
+  final Function? continueWithoutLocation;
+  final String? message;
 
-  const LocationServicesError({Key key, this.askPermission, this.continueWithoutLocation, this.message}) : super(key: key);
+  const LocationServicesError({Key? key, this.askPermission, this.continueWithoutLocation, this.message}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +32,14 @@ class LocationServicesError extends StatelessWidget {
               context: context,
               color: Colors.grey,
               text: 'Retry',
-              onPressed: askPermission,
+              onPressed: askPermission as void Function()?,
             ),
             SizedBox(height: 16.0,),
             FormSubmitButton(
               context: context,
               color: Colors.grey,
               text: 'Continue',
-              onPressed: continueWithoutLocation,
+              onPressed: continueWithoutLocation as void Function()?,
             ),
           ],
         ),

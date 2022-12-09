@@ -3,7 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import '../widgets/tabbed_widget.dart';
 
 class TabbedView extends StatelessWidget {
-  final Position currentLocation;
+  final Position? currentLocation;
 
   TabbedView({this.currentLocation});
 

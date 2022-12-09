@@ -8,10 +8,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../resources/app_data.dart';
 
 class MapUtils {
-  final Position currentLocation;
-  final int selectedDestination;
-  final Size mediaSize;
-  final Function callBack;
+  final Position? currentLocation;
+  final int? selectedDestination;
+  final Size? mediaSize;
+  final Function? callBack;
 
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
@@ -34,21 +34,21 @@ class MapUtils {
 
   onMapCreated(GoogleMapController controller) async {
     final double padding = 150.0;
-    final double width = mediaSize.width - padding;
-    final double height = mediaSize.height - padding;
+    final double width = mediaSize!.width - padding;
+    final double height = mediaSize!.height - padding;
 
     // Create map bounds
     final bounds = createTargetBounds();
 
     // Build markers title and snippet information for both current location and destination
     final NumberFormat fmt = new NumberFormat('0', 'en_ZA');
-    double nearestDistance;
+    double? nearestDistance;
     String nearestPlace = '';
 
     // Determine distance to nearest point of current location
     for (int i = 0; i < latitudesArr.length; i++) {
-      double distance = Geolocator.distanceBetween(currentLocation.latitude,
-          currentLocation.longitude, latitudesArr[i], longitudesArr[i]);
+      double distance = Geolocator.distanceBetween(currentLocation!.latitude,
+          currentLocation!.longitude, latitudesArr[i], longitudesArr[i]);
       if (distance < MINIMUM_DISTANCE) {
         nearestDistance = distance;
         nearestPlace = placesNamesArr[i];
@@ -67,12 +67,12 @@ class MapUtils {
     final startMarkerId = MarkerId('start');
     final startMarker = Marker(
         markerId: startMarkerId,
-        position: LatLng(currentLocation.latitude, currentLocation.longitude),
+        position: LatLng(currentLocation!.latitude, currentLocation!.longitude),
         infoWindow:
             InfoWindow(title: 'You are here', snippet: startSnippetInfo));
 
     // Format selected destination name (remove text after first / to save screen space)
-    final subString = placesNamesArr[selectedDestination].split('/');
+    final subString = placesNamesArr[selectedDestination!].split('/');
 
     // Determine distance to destination
     double distance = Geolocator.distanceBetween(
@@ -86,8 +86,8 @@ class MapUtils {
     final finishMarkerId = MarkerId('finish');
     final finishMarker = Marker(
         markerId: finishMarkerId,
-        position: LatLng(latitudesArr[selectedDestination],
-            longitudesArr[selectedDestination]),
+        position: LatLng(latitudesArr[selectedDestination!],
+            longitudesArr[selectedDestination!]),
         infoWindow: InfoWindow(title: subString[0], snippet: finishSnippetInfo),
         icon: await deliveryIcon);
 
@@ -101,14 +101,14 @@ class MapUtils {
         _getBoundsZoomLevel(bounds.northeast, bounds.southwest, width, height);
     controller.moveCamera(CameraUpdate.zoomTo(zoom));
 
-    callBack();
+    callBack!();
   }
 
   LatLngBounds createTargetBounds() {
     // Assume sw (curr) lat and long are less than ne (dest)
-    LatLng curr = LatLng(currentLocation.latitude, currentLocation.longitude);
+    LatLng curr = LatLng(currentLocation!.latitude, currentLocation!.longitude);
     LatLng dest = LatLng(
-        latitudesArr[selectedDestination], longitudesArr[selectedDestination]);
+        latitudesArr[selectedDestination!], longitudesArr[selectedDestination!]);
 
     // Calculate SW latitude bounds
     LatLng sw = LatLng(

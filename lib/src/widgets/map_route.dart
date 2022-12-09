@@ -6,8 +6,8 @@ import '../resources/app_data.dart';
 import '../utils/map_utils.dart';
 
 class MapRoute extends StatefulWidget {
-  final Position currentLocation;
-  final int selectedDestination;
+  final Position? currentLocation;
+  final int? selectedDestination;
 
   MapRoute({this.currentLocation, this.selectedDestination});
 
@@ -16,7 +16,7 @@ class MapRoute extends StatefulWidget {
 }
 
 class _MapRouteState extends State<MapRoute> {
-  MapUtils mapUtils;
+  late MapUtils mapUtils;
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
   void _callBack() {
@@ -50,11 +50,11 @@ class _MapRouteState extends State<MapRoute> {
         cameraTargetBounds: CameraTargetBounds(mapUtils.createTargetBounds()),
         initialCameraPosition: CameraPosition(
             target: LatLng(
-                (widget.currentLocation.latitude +
-                        latitudesArr[widget.selectedDestination]) /
+                (widget.currentLocation!.latitude +
+                        latitudesArr[widget.selectedDestination!]) /
                     2,
-                (widget.currentLocation.longitude +
-                        longitudesArr[widget.selectedDestination]) /
+                (widget.currentLocation!.longitude +
+                        longitudesArr[widget.selectedDestination!]) /
                     2),
             zoom: 18.0),
         markers: Set<Marker>.of(markers.values),
@@ -68,7 +68,7 @@ class _MapRouteState extends State<MapRoute> {
 
   useGoogleNavigation() async {
     Uri googleApiUrlString =
-        "http://maps.google.com/maps?saddr=${widget.currentLocation.latitude},${widget.currentLocation.longitude}&daddr=${latitudesArr[widget.selectedDestination]},${longitudesArr[widget.selectedDestination]}"
+        "http://maps.google.com/maps?saddr=${widget.currentLocation!.latitude},${widget.currentLocation!.longitude}&daddr=${latitudesArr[widget.selectedDestination!]},${longitudesArr[widget.selectedDestination!]}"
             as Uri;
     print(googleApiUrlString);
     if (await canLaunchUrl(googleApiUrlString)) {
