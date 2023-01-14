@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:lve_navigator2/src/screens/privacy_policy.dart';
 import 'package:lve_navigator2/src/screens/unit_search_dialog.dart';
 import '../resources/app_data.dart';
 import '../widgets/map_route.dart';
@@ -21,6 +22,11 @@ class _TabbedWidgetState extends State<TabbedWidget> {
     return Scaffold(
       appBar: AppBar(
         leading: Icon(Icons.explore),
+        actions: [
+          IconButton(
+              onPressed: () => _privacyPolicy(),
+              icon: const Icon(Icons.question_mark))
+        ],
         bottom: TabBar(
           tabs: [
             Tab(
@@ -51,6 +57,11 @@ class _TabbedWidgetState extends State<TabbedWidget> {
         child: Icon(Icons.search),
       ),
     );
+  }
+
+  _privacyPolicy() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => PrivacyPolicy()));
   }
 
   Widget _tabText(String text) {

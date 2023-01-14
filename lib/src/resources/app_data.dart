@@ -12,6 +12,9 @@ const DEST_LOC_SNIPPET = 3;
 const MINIMUM_DISTANCE = 30.0;
 const MAP_PADDING = 150;
 
+const String privacyPolicyUrl =
+    'https://docs.google.com/document/d/1sEsC8bc9K0ySW7G60u_SKuuzdcKZiEcDTcWjTCl1Em4/edit?usp=share_link';
+
 List<String> placesNamesArr = [
   "Gate on The Straight/Rockery/Forest",
   "Gate on Sunset/White Hills",
