@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:lve_navigator2/src/screens/location_services_error.dart';
+import 'package:lvenavigator2/src/screens/location_services_error.dart';
 import 'screens/tabbed_view.dart';
 import 'screens/loading_view.dart';
 

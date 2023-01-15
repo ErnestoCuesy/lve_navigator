@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:lve_navigator2/src/screens/policy_dialog.dart';
-import 'package:lve_navigator2/src/screens/unit_search_dialog.dart';
+import 'package:lvenavigator2/src/screens/policy_dialog.dart';
+import 'package:lvenavigator2/src/screens/unit_search_dialog.dart';
 import '../resources/app_data.dart';
 import '../widgets/map_route.dart';
 

@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:lve_navigator2/src/resources/app_data.dart';
-import 'package:lve_navigator2/src/widgets/custom_raised_button.dart';
-import 'package:lve_navigator2/src/widgets/map_route.dart';
+import 'package:lvenavigator2/src/resources/app_data.dart';
+import 'package:lvenavigator2/src/widgets/custom_raised_button.dart';
+import 'package:lvenavigator2/src/widgets/map_route.dart';
 
 class UnitSearchDialog extends StatefulWidget {
   const UnitSearchDialog({Key? key, this.currentLocation}) : super(key: key);

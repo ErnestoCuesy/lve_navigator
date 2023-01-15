@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:lve_navigator2/src/widgets/custom_raised_button.dart';
+import 'package:lvenavigator2/src/widgets/custom_raised_button.dart';
 
 class PolicyDialog extends StatelessWidget {
   PolicyDialog({Key? key, this.radius = 8, required this.mdFileName})
