@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:lve_navigator2/src/screens/privacy_policy.dart';
+import 'package:lve_navigator2/src/screens/policy_dialog.dart';
 import 'package:lve_navigator2/src/screens/unit_search_dialog.dart';
 import '../resources/app_data.dart';
 import '../widgets/map_route.dart';
@@ -17,16 +17,29 @@ class TabbedWidget extends StatefulWidget {
 class _TabbedWidgetState extends State<TabbedWidget> {
   int? selectedDestination;
 
+  Widget policiesButton() {
+    return PopupMenuButton<String>(
+        icon: Icon(Icons.question_mark_outlined),
+        onSelected: (String item) {
+          if (item == 'Privacy Policy') {
+            _privacyPolicy();
+          } else {
+            _termsAndConditions();
+          }
+        },
+        itemBuilder: (BuildContext context) {
+          return ['Privacy Policy', 'Terms and conditions'].map((String item) {
+            return PopupMenuItem<String>(child: Text(item), value: item);
+          }).toList();
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: Icon(Icons.explore),
-        actions: [
-          IconButton(
-              onPressed: () => _privacyPolicy(),
-              icon: const Icon(Icons.question_mark))
-        ],
+        actions: [policiesButton()],
         bottom: TabBar(
           tabs: [
             Tab(
@@ -61,7 +74,20 @@ class _TabbedWidgetState extends State<TabbedWidget> {
 
   _privacyPolicy() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => PrivacyPolicy()));
+        context,
+        MaterialPageRoute(
+            builder: (context) => PolicyDialog(
+                  mdFileName: 'privacy_policy.md',
+                )));
+  }
+
+  _termsAndConditions() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => PolicyDialog(
+                  mdFileName: 'terms_and_conditions.md',
+                )));
   }
 
   Widget _tabText(String text) {
