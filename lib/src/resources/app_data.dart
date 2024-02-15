@@ -16,7 +16,7 @@ const String privacyPolicyUrl =
     'https://docs.google.com/document/d/1sEsC8bc9K0ySW7G60u_SKuuzdcKZiEcDTcWjTCl1Em4/edit?usp=share_link';
 
 List<String> placesNamesArr = [
-  "Gate on The Straight/Rockery/Forest",
+  "Gate on The Straight/Rockery/\n  Forest Drive",
   "Gate on Sunset/White Hills",
   "Main clubhouse/Restaurant/Estate\n  Management Office/Tennis Court",
   "Wellness Centre/Gym/Hairdresser",

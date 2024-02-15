@@ -27,6 +27,7 @@
 .pub-cache/
 .pub/
 build/
+.flutter-plugins-dependencies
 
 # Android related
 **/android/**/gradle-wrapper.jar
@@ -73,3 +74,4 @@ Play store release.txt
 android/app/src/main/AndroidManifest.xml
 ios/Runner/AppDelegate.swift
 
+.flutter-plugins-dependencies

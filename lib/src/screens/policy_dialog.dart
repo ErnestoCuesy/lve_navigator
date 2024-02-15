@@ -42,7 +42,10 @@ class PolicyDialog extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: CustomRaisedButton(
-                    child: const Text('OK'),
+                    child: const Text(
+                      'OK',
+                      style: TextStyle(color: Colors.white),
+                    ),
                     onPressed: () => Navigator.of(context).pop(),
                     height: 40.0,
                     width: 80.0,
