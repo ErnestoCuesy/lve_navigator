@@ -41,7 +41,10 @@ class _UnitSearchDialogState extends State<UnitSearchDialog> {
                 labelText: 'Enter unit number (1 to 314)',
               ),
               validator: (value) {
-                var v = int.tryParse(value!)!;
+                int v = 0;
+                if (value != null && value != '') {
+                  v = int.tryParse(value)!;
+                }
                 print('value: $v');
                 if (v > 0 && v < 315) {
                   return null;
@@ -52,7 +55,10 @@ class _UnitSearchDialogState extends State<UnitSearchDialog> {
             ),
           ),
           CustomRaisedButton(
-            child: const Text('OK'),
+            child: const Text(
+              'OK',
+              style: TextStyle(color: Colors.white),
+            ),
             onPressed: () => _submit(context),
             height: 40.0,
             width: 80.0,

@@ -27,8 +27,10 @@ class DirectoryState extends State<Directory> {
       accuracy: 0,
       speedAccuracy: 0,
       heading: 0,
+      headingAccuracy: 0,
       timestamp: DateTime.now(),
-      altitude: 0);
+      altitude: 0,
+      altitudeAccuracy: 0);
   bool _continueFlag = false;
 
   void _askPermission() {

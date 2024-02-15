@@ -24,7 +24,7 @@ class LocationServicesError extends StatelessWidget {
           children: [
             Text(
               'LVE Navigator',
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
             Container(
               padding: EdgeInsets.all(32.0),
