@@ -10,7 +10,7 @@ description: Application that helps Lonehill Village Estate visitors to find amm
 # iOS version
 # version: 1.5+11
 # Android version
-version: 1.0.1+15
+version: 1.0.1+16
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
