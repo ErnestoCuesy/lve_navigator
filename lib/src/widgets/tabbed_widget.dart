@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:lvenavigator2/src/classes/session_notifier.dart';
+import 'package:lvenavigator2/src/resources/definitions.dart';
 import 'package:lvenavigator2/src/screens/policy_dialog.dart';
 import 'package:lvenavigator2/src/screens/unit_search_dialog.dart';
+import 'package:provider/provider.dart';
 import '../resources/app_data.dart';
 import '../widgets/map_route.dart';
 
@@ -15,20 +18,43 @@ class TabbedWidget extends StatefulWidget {
 }
 
 class _TabbedWidgetState extends State<TabbedWidget> {
+  late SessionNotifier _session;
   int? selectedDestination;
+
+  void onThemeChanged(bool value, SessionNotifier session) async {
+    (value) ? session.setTheme(darkTheme) : session.setTheme(lightTheme);
+    _updatePreferences(value);
+  }
+
+  _updatePreferences(bool darkMode) async {
+    _session.prefs.setString('_darkMode', darkMode ? 'true' : 'false');
+  }
 
   Widget policiesButton() {
     return PopupMenuButton<String>(
-        icon: Icon(Icons.question_mark_outlined),
+        icon: Icon(Icons.menu),
         onSelected: (String item) {
-          if (item == 'Privacy Policy') {
-            _privacyPolicy();
-          } else {
-            _termsAndConditions();
+          switch (item) {
+            case 'Dark mode':
+              onThemeChanged(true, _session);
+              break;
+            case 'Light mode':
+              onThemeChanged(false, _session);
+              break;
+            case 'Privacy Policy':
+              _privacyPolicy();
+              break;
+            case 'Terms and conditions':
+              _termsAndConditions();
+              break;
           }
         },
         itemBuilder: (BuildContext context) {
-          return ['Privacy Policy', 'Terms and conditions'].map((String item) {
+          String newMode = 'Dark mode';
+          if (_session.currentlyDark) {
+            newMode = 'Light mode';
+          }
+          return [newMode, 'Privacy Policy', 'Terms and conditions'].map((String item) {
             return PopupMenuItem<String>(child: Text(item), value: item);
           }).toList();
         });
@@ -36,9 +62,9 @@ class _TabbedWidgetState extends State<TabbedWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _session = Provider.of<SessionNotifier>(context);
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.explore),
         actions: [policiesButton()],
         bottom: TabBar(
           tabs: [

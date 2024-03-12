@@ -16,9 +16,7 @@ class LocationServicesError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        //backgroundColor: Theme.of(context).splashColor,
+    return Scaffold(
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -36,7 +34,7 @@ class LocationServicesError extends StatelessWidget {
             FormSubmitButton(
               context: context,
               color: Colors.grey,
-              text: 'Retry',
+              text: 'Ask permission',
               onPressed: askPermission as void Function()?,
             ),
             SizedBox(
@@ -50,7 +48,6 @@ class LocationServicesError extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }

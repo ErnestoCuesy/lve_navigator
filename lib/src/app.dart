@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:lvenavigator2/src/classes/session_notifier.dart';
 import 'package:lvenavigator2/src/screens/location_services_error.dart';
+import 'package:provider/provider.dart';
 import 'screens/tabbed_view.dart';
 import 'screens/loading_view.dart';
 
 class LVENavigator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+  final session = Provider.of<SessionNotifier>(context);
     return MaterialApp(
+      theme: session.themeData,
       home: Directory(),
       debugShowCheckedModeBanner: false,
     );
