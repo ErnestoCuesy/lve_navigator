@@ -24,11 +24,19 @@ class MapUtils {
   // Return appropriate destination chequered flag based on platform
   Future<BitmapDescriptor> get deliveryIcon async {
     if (Platform.isIOS) {
-      return BitmapDescriptor.fromAssetImage(
-          ImageConfiguration(), 'assets/chequered-flagiOS.png');
+      return BitmapDescriptor.asset(
+        ImageConfiguration(),
+        'assets/chequered-flagiOS.png',
+        width: 36.0,
+        height: 36.0,
+      );
     } else {
-      return BitmapDescriptor.fromAssetImage(
-          ImageConfiguration(), 'assets/chequered-flag.png');
+      return BitmapDescriptor.asset(
+        ImageConfiguration(),
+        'assets/chequered-flag.png',
+        width: 36.0,
+        height: 36.0,
+      );
     }
   }
 
@@ -107,8 +115,8 @@ class MapUtils {
   LatLngBounds createTargetBounds() {
     // Assume sw (curr) lat and long are less than ne (dest)
     LatLng curr = LatLng(currentLocation!.latitude, currentLocation!.longitude);
-    LatLng dest = LatLng(
-        latitudesArr[selectedDestination!], longitudesArr[selectedDestination!]);
+    LatLng dest = LatLng(latitudesArr[selectedDestination!],
+        longitudesArr[selectedDestination!]);
 
     // Calculate SW latitude bounds
     LatLng sw = LatLng(

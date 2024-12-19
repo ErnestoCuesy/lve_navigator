@@ -29,9 +29,9 @@ class CustomRaisedButton extends StatelessWidget {
       child: ElevatedButton(
         child: child,
         style: ButtonStyle(
-          foregroundColor: MaterialStateProperty.all<Color?>(textColor),
-          backgroundColor: MaterialStateProperty.all<Color?>(color),
-          shape: MaterialStateProperty.all<OutlinedBorder>(
+          foregroundColor: WidgetStateProperty.all<Color?>(textColor),
+          backgroundColor: WidgetStateProperty.all<Color?>(color),
+          shape: WidgetStateProperty.all<OutlinedBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(borderRadius),
